@@ -1,6 +1,8 @@
 const HttpError = require("../models/http-error");
 const { validationResult } = require("express-validator");
 const { v4: uuidv4 } = require("uuid");
+const getCoordsForAddress = require("../util/location");
+
 let DUMMY_PLACES = [
   {
     id: "p1",
