@@ -47,15 +47,23 @@ const getPlaceByUserId = (req, res, next) => {
   res.json({ place });
 };
 
-const createPlace = (req, res, next) => {
+const createPlace = async (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     console.log(errors);
-    throw new HttpError("Invalid inputs passed, please check your data.", 422);
+    next(new HttpError("Invalid inputs passed, please check your data.", 422));
   }
 
-  const { title, description, coordinates, address, creator } = req.body;
+  const { title, description, address, creator } = req.body;
+
+  let coordinates;
+  try {
+    coordinates = await getCoordsForAddress(address);
+  } catch (error) {
+    return next(error);
+  }
+
   // const title = req.body.title;
   const createdPlace = {
     id: uuidv4(),
@@ -65,6 +73,7 @@ const createPlace = (req, res, next) => {
     address,
     creator,
   };
+
   DUMMY_PLACES.push(createdPlace);
 
   res.status(201).json({ place: createdPlace });
