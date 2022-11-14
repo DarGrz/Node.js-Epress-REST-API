@@ -28,5 +28,6 @@ yarn-error.log*
 # google ApiKey
 .location.js
 
+
 #api
 .env

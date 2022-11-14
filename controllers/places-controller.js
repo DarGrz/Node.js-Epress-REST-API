@@ -1,4 +1,5 @@
 const HttpError = require("../models/http-error");
+const fs = require("fs");
 const { validationResult } = require("express-validator");
 const getCoordsForAddress = require("../util/location");
 const Place = require("../models/place");
@@ -80,7 +81,7 @@ const createPlace = async (req, res, next) => {
     description,
     address,
     location: coordinates,
-    image: "https://pinnacle.works/wp-content/uploads/2022/06/dummy-image.jpg",
+    image: req.file.path,
     creator,
   });
 
@@ -167,6 +168,8 @@ const deletePlace = async (req, res, next) => {
     return next(error);
   }
 
+  const imagePath = place.image;
+
   try {
     const session = await mongoose.startSession();
     session.startTransaction();
@@ -178,6 +181,9 @@ const deletePlace = async (req, res, next) => {
     const error = new HttpError("Could not delete place", 500);
     return next(error);
   }
+  fs.unlink(imagePath, (err) => {
+    console.log(err);
+  });
 
   res.status(200).json({ message: "Place deleted" });
 };
