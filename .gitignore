@@ -28,7 +28,7 @@ yarn-error.log*
 
 
 # API KEYS
-nodemon.json
+# nodemon.json
 
 #api
 .env
